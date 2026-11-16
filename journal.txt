@@ -1,0 +1,18 @@
+Week 1 — Exercise 1
+
+Goal in my own words:
+
+Agent's proposed plan:
+
+My review of the plan (scope, tests, unnecessary permissions):
+
+What the agent changed:
+
+Tests and manual checks I ran; actual results:
+
+Problems I found and how they were fixed:
+
+My decision to accept or request changes, with reasons:
+
+Explain: how did I plan, act, and evaluate?
+

@@ -1,0 +1,9 @@
+Title: Show a task summary
+
+Acceptance criteria:
+1. `summary` prints total, pending, and completed counts.
+2. Empty storage produces zero for all counts.
+3. A mix of task states produces accurate counts.
+4. Summary never changes stored tasks; existing commands keep working.
+
+Save for later; do not implement during Exercise 1.

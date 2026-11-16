@@ -1,0 +1,18 @@
+Title: Filter tasks by completion status
+
+Goal: Help users list only the tasks they need to see.
+
+Acceptance criteria:
+1. `python3 task_tracker.py list` keeps showing all tasks.
+2. `python3 task_tracker.py list --status all` shows all tasks.
+3. `python3 task_tracker.py list --status pending` excludes completed tasks.
+4. `python3 task_tracker.py list --status completed` excludes pending tasks.
+5. An invalid status exits with a nonzero code and a helpful error.
+6. Listing never changes the saved task data, IDs, or order.
+7. Empty results print no task lines and exit successfully.
+8. All baseline tests pass, and automated tests cover the new CLI behavior.
+
+Scope: Use the Python standard library; preserve add and complete behavior.
+
+Supervision: First request a plan in read-only mode. Inspect it before starting
+implementation. Record the plan, test evidence, and your review in journal.txt.

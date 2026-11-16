@@ -1,0 +1,9 @@
+Title: Rename a task
+
+Acceptance criteria:
+1. `rename ID "New title"` updates the chosen task and persists the change.
+2. Existing task ID and completion status remain unchanged.
+3. Whitespace-only titles and missing IDs fail without changing saved data.
+4. Existing commands and tests continue working.
+
+Save for later; do not implement during Exercise 1.
