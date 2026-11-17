@@ -1,18 +1,37 @@
 Week 1 — Exercise 1
 
 Goal in my own words:
+Allow listing all tasks or filtering the displayed tasks by pending/completed
+status without changing the saved task data.
 
 Agent's proposed plan:
+Add a `--status` option to the `list` subcommand, default it to `all`, and
+restrict printed rows without modifying or saving the loaded tasks. Add CLI
+tests for default/all, both filters, invalid status, unchanged stored data, and
+empty results. Use only the standard library.
 
 My review of the plan (scope, tests, unnecessary permissions):
+Reviewed and approved before implementation. The plan is limited to the filter
+feature and its required tests/documentation; no additional permissions or
+dependencies are needed.
 
 What the agent changed:
+Added the `list --status` choices `all`, `pending`, and `completed` in
+`task_tracker.py`. Added CLI tests for all status cases, invalid input, empty
+filtered output, and preservation of IDs, order, and saved bytes. This journal
+also records the plan and test evidence as required by the exercise.
 
 Tests and manual checks I ran; actual results:
+`python3 -m unittest discover -v` — passed; 9 tests ran, 0 failures/errors.
+No manual checks run.
 
 Problems I found and how they were fixed:
+None.
 
 My decision to accept or request changes, with reasons:
+Pending final review.
 
 Explain: how did I plan, act, and evaluate?
-
+Planned and reviewed the scoped CLI change first, implemented it using
+`argparse` choices and read-only output filtering, then evaluated it with the
+full automated test suite.
