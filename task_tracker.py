@@ -40,7 +40,13 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     add = commands.add_parser("add", help="Add a task")
     add.add_argument("title")
-    commands.add_parser("list", help="Show all tasks")
+    list_command = commands.add_parser("list", help="Show tasks")
+    list_command.add_argument(
+        "--status",
+        choices=("all", "pending", "completed"),
+        default="all",
+        help="Filter tasks by completion status (default: all)",
+    )
     complete = commands.add_parser("complete", help="Mark a task as completed")
     complete.add_argument("id", type=int)
     args = parser.parse_args(argv)
@@ -54,8 +60,12 @@ def main(argv=None):
             task = complete_task(tasks, args.id)
             save_tasks(args.data, tasks)
             print(f"Completed task {task['id']}")
-        else:
+        elif args.command == "list":
             for task in tasks:
+                if args.status == "pending" and task["completed"]:
+                    continue
+                if args.status == "completed" and not task["completed"]:
+                    continue
                 marker = "x" if task["completed"] else " "
                 print(f"{task['id']}. [{marker}] {task['title']}")
     except (ValueError, OSError) as error:

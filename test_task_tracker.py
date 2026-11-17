@@ -61,6 +61,63 @@ class TaskTrackerTests(unittest.TestCase):
             self.assertEqual(output.getvalue(), "1. [x] Read module\n2. [ ] Try agent\n")
             self.assertEqual(path.read_bytes(), before)
 
+    def test_cli_list_status_filters_preserve_saved_tasks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tasks.json"
+            tasks = [
+                {"id": 8, "title": "Completed first", "completed": True},
+                {"id": 3, "title": "Pending", "completed": False},
+                {"id": 11, "title": "Completed last", "completed": True},
+            ]
+            tracker.save_tasks(path, tasks)
+            before = path.read_bytes()
+
+            expected_outputs = (
+                (["list"], "8. [x] Completed first\n3. [ ] Pending\n"
+                           "11. [x] Completed last\n"),
+                (["list", "--status", "all"],
+                 "8. [x] Completed first\n3. [ ] Pending\n"
+                 "11. [x] Completed last\n"),
+                (["list", "--status", "pending"], "3. [ ] Pending\n"),
+                (["list", "--status", "completed"],
+                 "8. [x] Completed first\n11. [x] Completed last\n"),
+            )
+            for arguments, expected in expected_outputs:
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    tracker.main(["--data", str(path), *arguments])
+                self.assertEqual(output.getvalue(), expected)
+
+            self.assertEqual(path.read_bytes(), before)
+            self.assertEqual(tracker.load_tasks(path), tasks)
+
+    def test_cli_list_empty_filter_result_succeeds_without_task_lines(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tasks.json"
+            tracker.save_tasks(path, [
+                {"id": 1, "title": "Finished", "completed": True},
+            ])
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                tracker.main([
+                    "--data", str(path), "list", "--status", "pending",
+                ])
+            self.assertEqual(output.getvalue(), "")
+
+    def test_cli_list_rejects_invalid_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tasks.json"
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                with self.assertRaises(SystemExit) as raised:
+                    tracker.main([
+                        "--data", str(path), "list", "--status", "finished",
+                    ])
+            self.assertEqual(raised.exception.code, 2)
+            self.assertIn("invalid choice: 'finished'", error.getvalue())
+            self.assertIn("pending", error.getvalue())
+            self.assertIn("completed", error.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
